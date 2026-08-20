@@ -24,22 +24,24 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8
-        # بنسطب المكاتب عشان flake8 يفهم الـ imports
         if [ -f backend/requirements.txt ]; then pip install -r backend/requirements.txt; fi
         if [ -f frontend/requirements.txt ]; then pip install -r frontend/requirements.txt; fi
 
     - name: Lint with flake8
       run: |
-        # التأكد من عدم وجود أخطاء برمجية قاتلة
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # تحذيرات لتنسيق الكود
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
+    # الخطوة الجديدة السحرية لحل المشكلة
+    - name: Create Dummy .env file
+      run: |
+        mkdir -p backend
+        echo "GEMINI_API_KEY=dummy_ci_key_12345" > backend/.env
+
     - name: Build and Run Docker Containers
-      # لاحظ هنا شلنا الشرطة من docker-compose
       run: docker compose up --build -d
 
     - name: Wait for Services to Start
@@ -53,5 +55,4 @@ jobs:
 
     - name: Tear Down Containers
       if: always()
-      # وهنا كمان شلنا الشرطة
       run: docker compose down
