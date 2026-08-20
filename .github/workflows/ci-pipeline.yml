@@ -39,7 +39,8 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Build and Run Docker Containers
-      run: docker-compose up --build -d
+      # لاحظ هنا شلنا الشرطة من docker-compose
+      run: docker compose up --build -d
 
     - name: Wait for Services to Start
       run: sleep 15
@@ -52,4 +53,5 @@ jobs:
 
     - name: Tear Down Containers
       if: always()
-      run: docker-compose down
+      # وهنا كمان شلنا الشرطة
+      run: docker compose down
