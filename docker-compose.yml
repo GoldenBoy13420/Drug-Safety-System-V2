@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: oriva_backend
+    ports:
+      - "8000:8000"
+    env_file:             # <--- السطر ده
+      - ./backend/.env    # <--- والسطر ده
+    networks:
+      - oriva_network
+
+  frontend:
+    build: ./frontend
+    container_name: oriva_frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - oriva_network
+
+networks:
+  oriva_network:
+    driver: bridge
